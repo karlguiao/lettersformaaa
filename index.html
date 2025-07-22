@@ -32,24 +32,41 @@
     }
 
     .logo {
-        display: block;
-        margin: 0 auto -35px auto;
-        max-width: 70%;
-        height: auto;
+      display: block;
+      margin: 0 auto -35px auto;
+      max-width: 70%;
+      height: auto;
     }
 
     h2 {
       text-align: center;
       color: #e87ca2;
       margin-bottom: 20px;
-      font-size: 28px;
+      font-size: 35px;
     }
 
     h4 {
-        padding-top: 10px;
-        text-align: center;
-        color: #e87ca2;
-        font-size: 15px;
+      padding-top: 10px;
+      text-align: center;
+      color: #e87ca2;
+      font-size: 20px;
+    }
+
+    .letter {
+      padding-top: 10px;
+      text-align: justify;
+      color: #960839;
+      font-size: 17px;
+    }
+
+    .link-desc {
+      text-align: center;
+      color: #000000;
+      font-size: 10px;
+    }
+
+    .arrow {
+      text-align: center;
     }
 
     textarea, input[type="text"], input[type="password"] {
@@ -79,45 +96,6 @@
       background-color: #ec407a;
     }
 
-    .posts {
-      margin-top: 30px;
-    }
-
-    .post {
-      background: #fff0f7;
-      border-left: 5px solid #ec407a;
-      padding: 15px;
-      margin-bottom: 20px;
-      border-radius: 12px;
-      position: relative;
-    }
-
-    .post-date {
-      font-size: 12px;
-      color: #888;
-      margin-top: 5px;
-    }
-
-    .heart {
-      position: absolute;
-      font-size: 20px;
-      top: -10px;
-      right: 10px;
-      color: #f48fb1;
-    }
-
-    .comments {
-      margin-top: 10px;
-      border-top: 1px dashed #fbb6d6;
-      padding-top: 10px;
-    }
-
-    .comment {
-      font-size: 15px;
-      padding: 5px 0;
-      border-bottom: 1px solid #ffe0ec;
-    }
-
     footer {
       text-align: center;
       font-size: 14px;
@@ -143,6 +121,21 @@
     .hidden {
       display: none;
     }
+
+    iframe {
+      padding-top: 15px;
+    }
+
+    .center-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .center-link a {
+      color: #e87ca2;
+      font-size: 20px;
+    }
+
   </style>
 </head>
 <body>
@@ -159,147 +152,36 @@
   <!-- 🐾 Main Wall (Hidden by Default) -->
   <div class="container hidden" id="mainWall">
     <img src="Catwall-logo.png" alt="Cat Wall logo" class="logo">
-    <form id="post-form">
-        <textarea id="letterInput" placeholder="Write something for her..." required></textarea><br>
-        <input type="file" id="image-upload" accept="image/*"><br>
-        <button onclick="postLetter()">Post Letter</button>
-    </form>
     
     <h4>"I may not be perfect now, but loving you makes me want to be better. Just watch me change." ~KG</h4>
+    <div class="center-link">
+      <a href="" target="_blank">More Letters Soon</a>
+    </div>
+    <p class="arrow">⬆️⬆️⬆️</p>
+    <p class="link-desc"> click this link to see posts of more letters</p>
+    <p class="letter">I know I don't deserve you, and you're already moving on pero di ko talaga kaya na mawala ka sakin. Sana kung mabibigyan mo pa ako ng isa pang pagkakataon aayusin ko lahat ng sinira ko. Ilang araw na akong ganito simula nung binlock moko ayaw ko lng mangulit kasi alam kong kinalimutan mo na ako pero wala eh di ko mapigilan yung sarili ko na mamiss ka. Sana kahit makausap man lng kita ulit nang maayos for one last time willing ako ibigyan lahat. I will become the man that will deserve you, I am currently working to achieve that right now sana sa tamang panahon kapag pwede na, sana pwede pa. I hope you're doing well, sana safe kayo palagi nina tita and sana masaya ka kung nasan ka man ngayon. Hinding hindi ko makakalimutan yung almost 4 years na pinagsamahan natin, dadalhin ko lahat ng yon hanggang sa mamatay ako. Mag iingat ka palagi, I know na ayaw mo na akong kausapin and I understand that. I respect your decisions kaya I will admire you silently na lng. Sana m achieve mo yung mga pangarap mo sa buhay, nandito lang ako para suportahan ka sana maging masaya at okay yung future mo. Hinding hindi kita makakalimutan Angelica, mag iingat ka palagi and good luck sa future mo sana i bless pa ni Lord yung buhay mo, sana makatulog ka na nang maayos, sana tinatrato ka na nang tama ng mga tao sa paligid mo, at sana makalimutan mo na ako. From the bottom of my heart, I love you always and forever.</p>
 
-    <div class="posts" id="postsContainer"></div>
+    <iframe style="border-radius:12px" 
+    src="https://open.spotify.com/embed/playlist/0n5otRQeE9KLXzNOviwtwj" 
+    width="100%" height="380" frameborder="0"
+    allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+    loading="lazy">
+    </iframe>
 
     <footer>From your silent admirer ~KG</footer>
   </div>
-
-    <script>
-    const PASSWORD = "28-07-21";
-    const ADMIN_PASSWORD = "adminmeow2055";
-    let isAdmin = false;
     
+  <script>
+    const PASSWORD = "28-07-21";
 
     function checkPassword() {
-        const input = document.getElementById("password").value.trim();
-        if (input === PASSWORD || input === ADMIN_PASSWORD) {
+      const input = document.getElementById("password").value.trim();
+      if (input === PASSWORD) {
         document.getElementById("login-container").style.display = "none";
         document.getElementById("mainWall").classList.remove("hidden");
-        isAdmin = input === ADMIN_PASSWORD;
-        togglePostForm();
-        loadLetters(); // ✅ Load from localStorage
-        } else {
+      } else {
         document.getElementById("error").classList.remove("hidden");
-        }
-    }
-
-    function togglePostForm() {
-        const form = document.getElementById('post-form');
-        form.style.display = isAdmin ? 'block' : 'none';
-    }
-
-    document.getElementById('post-form').addEventListener('submit', postLetter);
-
-    function postLetter(e) {
-        e.preventDefault();
-        if (!isAdmin) return alert("Only admin can post letters!");
-
-        const input = document.getElementById('letterInput');
-        const fileInput = document.getElementById('image-upload');
-        const text = input.value.trim();
-        const imageFile = fileInput.files[0];
-
-        if (!text && !imageFile) return alert("Write a message or add an image!");
-
-        const newLetter = {
-        id: Date.now(),
-        text,
-        date: new Date().toLocaleString(),
-        comments: [],
-        image: null
-        };
-
-        if (imageFile) {
-        const reader = new FileReader();
-        reader.onload = function () {
-            newLetter.image = reader.result;
-            saveAndDisplay(newLetter);
-        };
-        reader.readAsDataURL(imageFile);
-        } else {
-        saveAndDisplay(newLetter);
-        }
-
-        input.value = '';
-        fileInput.value = '';
-    }
-
-    function saveAndDisplay(letter) {
-        const letters = JSON.parse(localStorage.getItem('letters') || '[]');
-        letters.unshift(letter);
-        localStorage.setItem('letters', JSON.stringify(letters));
-        displayLetter(letter);
-    }
-
-    function loadLetters() {
-        const letters = JSON.parse(localStorage.getItem('letters') || '[]');
-        letters.forEach(displayLetter);
-    }
-
-    function displayLetter(letter) {
-        const postDiv = document.createElement('div');
-        postDiv.className = 'post';
-        postDiv.id = `post-${letter.id}`;
-
-        postDiv.innerHTML = `
-        <div class="heart">🐾</div>
-        <div style="padding-bottom: 5px;" class="post-date">${letter.date}</div>
-        <div style="font-size: 17px; color: #e87ca2; margin-bottom: 5px;"><strong>Admin KG</strong></div>
-        <p>${letter.text.replace(/\n/g, '<br>')}</p>
-        ${letter.image ? `<img src="${letter.image}" style="max-width:100%; margin-top:10px; border-radius:10px;">` : ''}
-        ${isAdmin ? `<button onclick="deletePost(${letter.id})" style="margin-top:10px; background:#ffe0e9; color:#d80027;">Delete</button>` : ''}
-        <div class="comments" id="comments-${letter.id}">
-            ${letter.comments.map(c => `<div class="comment">₍^. .^₎Ⳋ<br> ${c}</div>`).join('')}
-            <input type="text" placeholder="add a comment..." onkeydown="handleComment(event, ${letter.id})">
-        </div>
-        `;
-
-        document.getElementById('postsContainer').append(postDiv);
-    }
-
-    function handleComment(event, postId) {
-        if (event.key === "Enter") {
-        const input = event.target;
-        const comment = input.value.trim();
-        if (!comment) return;
-
-        let letters = JSON.parse(localStorage.getItem('letters') || '[]');
-        const index = letters.findIndex(l => l.id === postId);
-        if (index !== -1) {
-            letters[index].comments.push(comment);
-            localStorage.setItem('letters', JSON.stringify(letters));
-
-            const commentsDiv = document.getElementById(`comments-${postId}`);
-            const newComment = document.createElement("div");
-            newComment.className = "comment";
-            newComment.textContent = `₍^. .^₎Ⳋ ${comment}`;
-            commentsDiv.insertBefore(newComment, commentsDiv.lastElementChild);
-
-            input.value = '';
-        }
-        }
-    }
-
-    function deletePost(postId) {
-        if (!isAdmin) return alert("Only admin can delete posts!");
-
-        const confirmed = confirm("Are you sure you want to delete this letter?");
-        if (!confirmed) return;
-
-        let letters = JSON.parse(localStorage.getItem('letters') || '[]');
-        letters = letters.filter(l => l.id !== postId);
-        localStorage.setItem('letters', JSON.stringify(letters));
-
-        const postDiv = document.getElementById(`post-${postId}`);
-        if (postDiv) postDiv.remove();
+      }
     }
     </script>
 </body>
