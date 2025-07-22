@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cat Wall</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+  <link rel="shortcut icon" href="Catwall-logo.png" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Comic Neue', cursive;
+      background: url('cutecat.jpg') no-repeat center;
+      background-size: cover;
+      background-color: #fff0f5;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(255, 192, 203, 0.5);
+    }
+
+    .logo {
+        display: block;
+        margin: 0 auto -35px auto;
+        max-width: 70%;
+        height: auto;
+    }
+
+    h2 {
+      text-align: center;
+      color: #e87ca2;
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+
+    h4 {
+        padding-top: 10px;
+        text-align: center;
+        color: #e87ca2;
+        font-size: 15px;
+    }
+
+    textarea, input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #f8b7cc;
+      font-size: 16px;
+      margin-top: 10px;
+      background-color: #fff8fb;
+    }
+
+    button {
+      margin-top: 10px;
+      width: 100%;
+      background-color: #f48fb1;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #ec407a;
+    }
+
+    .posts {
+      margin-top: 30px;
+    }
+
+    .post {
+      background: #fff0f7;
+      border-left: 5px solid #ec407a;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .post-date {
+      font-size: 12px;
+      color: #888;
+      margin-top: 5px;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 20px;
+      top: -10px;
+      right: 10px;
+      color: #f48fb1;
+    }
+
+    .comments {
+      margin-top: 10px;
+      border-top: 1px dashed #fbb6d6;
+      padding-top: 10px;
+    }
+
+    .comment {
+      font-size: 15px;
+      padding: 5px 0;
+      border-bottom: 1px solid #ffe0ec;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 30px;
+      color: #999;
+    }
+
+    #login-container {
+      max-width: 400px;
+      margin: 100px auto;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(255, 182, 193, 0.6);
+      text-align: center;
+    }
+
+    #error {
+      color: red;
+      margin-top: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🐱 Password Login -->
+  <div id="login-container">
+    <h2>Welcome Meow!</h2>
+    <p>Enter special date to view the letters</p>
+    <input type="password" id="password" placeholder="Enter password (e.g. 18-02-25)">
+    <button onclick="checkPassword()">Unlock</button>
+    <p id="error" class="hidden">Wrong password. Try again!</p>
+  </div>
+
+  <!-- 🐾 Main Wall (Hidden by Default) -->
+  <div class="container hidden" id="mainWall">
+    <img src="Catwall-logo.png" alt="Cat Wall logo" class="logo">
+    <form id="post-form">
+        <textarea id="letterInput" placeholder="Write something for her..." required></textarea><br>
+        <input type="file" id="image-upload" accept="image/*"><br>
+        <button onclick="postLetter()">Post Letter</button>
+    </form>
+    
+    <h4>"I may not be perfect now, but loving you makes me want to be better. Just watch me change." ~KG</h4>
+
+    <div class="posts" id="postsContainer"></div>
+
+    <footer>From your silent admirer ~KG</footer>
+  </div>
+
+    <script>
+    const PASSWORD = "28-07-21";
+    const ADMIN_PASSWORD = "adminmeow2055";
+    let isAdmin = false;
+    
+
+    function checkPassword() {
+        const input = document.getElementById("password").value.trim();
+        if (input === PASSWORD || input === ADMIN_PASSWORD) {
+        document.getElementById("login-container").style.display = "none";
+        document.getElementById("mainWall").classList.remove("hidden");
+        isAdmin = input === ADMIN_PASSWORD;
+        togglePostForm();
+        loadLetters(); // ✅ Load from localStorage
+        } else {
+        document.getElementById("error").classList.remove("hidden");
+        }
+    }
+
+    function togglePostForm() {
+        const form = document.getElementById('post-form');
+        form.style.display = isAdmin ? 'block' : 'none';
+    }
+
+    document.getElementById('post-form').addEventListener('submit', postLetter);
+
+    function postLetter(e) {
+        e.preventDefault();
+        if (!isAdmin) return alert("Only admin can post letters!");
+
+        const input = document.getElementById('letterInput');
+        const fileInput = document.getElementById('image-upload');
+        const text = input.value.trim();
+        const imageFile = fileInput.files[0];
+
+        if (!text && !imageFile) return alert("Write a message or add an image!");
+
+        const newLetter = {
+        id: Date.now(),
+        text,
+        date: new Date().toLocaleString(),
+        comments: [],
+        image: null
+        };
+
+        if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            newLetter.image = reader.result;
+            saveAndDisplay(newLetter);
+        };
+        reader.readAsDataURL(imageFile);
+        } else {
+        saveAndDisplay(newLetter);
+        }
+
+        input.value = '';
+        fileInput.value = '';
+    }
+
+    function saveAndDisplay(letter) {
+        const letters = JSON.parse(localStorage.getItem('letters') || '[]');
+        letters.unshift(letter);
+        localStorage.setItem('letters', JSON.stringify(letters));
+        displayLetter(letter);
+    }
+
+    function loadLetters() {
+        const letters = JSON.parse(localStorage.getItem('letters') || '[]');
+        letters.forEach(displayLetter);
+    }
+
+    function displayLetter(letter) {
+        const postDiv = document.createElement('div');
+        postDiv.className = 'post';
+        postDiv.id = `post-${letter.id}`;
+
+        postDiv.innerHTML = `
+        <div class="heart">🐾</div>
+        <div style="padding-bottom: 5px;" class="post-date">${letter.date}</div>
+        <div style="font-size: 17px; color: #e87ca2; margin-bottom: 5px;"><strong>Admin KG</strong></div>
+        <p>${letter.text.replace(/\n/g, '<br>')}</p>
+        ${letter.image ? `<img src="${letter.image}" style="max-width:100%; margin-top:10px; border-radius:10px;">` : ''}
+        ${isAdmin ? `<button onclick="deletePost(${letter.id})" style="margin-top:10px; background:#ffe0e9; color:#d80027;">Delete</button>` : ''}
+        <div class="comments" id="comments-${letter.id}">
+            ${letter.comments.map(c => `<div class="comment">₍^. .^₎Ⳋ<br> ${c}</div>`).join('')}
+            <input type="text" placeholder="add a comment..." onkeydown="handleComment(event, ${letter.id})">
+        </div>
+        `;
+
+        document.getElementById('postsContainer').append(postDiv);
+    }
+
+    function handleComment(event, postId) {
+        if (event.key === "Enter") {
+        const input = event.target;
+        const comment = input.value.trim();
+        if (!comment) return;
+
+        let letters = JSON.parse(localStorage.getItem('letters') || '[]');
+        const index = letters.findIndex(l => l.id === postId);
+        if (index !== -1) {
+            letters[index].comments.push(comment);
+            localStorage.setItem('letters', JSON.stringify(letters));
+
+            const commentsDiv = document.getElementById(`comments-${postId}`);
+            const newComment = document.createElement("div");
+            newComment.className = "comment";
+            newComment.textContent = `₍^. .^₎Ⳋ ${comment}`;
+            commentsDiv.insertBefore(newComment, commentsDiv.lastElementChild);
+
+            input.value = '';
+        }
+        }
+    }
+
+    function deletePost(postId) {
+        if (!isAdmin) return alert("Only admin can delete posts!");
+
+        const confirmed = confirm("Are you sure you want to delete this letter?");
+        if (!confirmed) return;
+
+        let letters = JSON.parse(localStorage.getItem('letters') || '[]');
+        letters = letters.filter(l => l.id !== postId);
+        localStorage.setItem('letters', JSON.stringify(letters));
+
+        const postDiv = document.getElementById(`post-${postId}`);
+        if (postDiv) postDiv.remove();
+    }
+    </script>
+</body>
+</html>
